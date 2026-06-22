@@ -1,4 +1,4 @@
-"""Command line interface for baby-everythings-agent-skill."""
+"""Command line interface for Baby Daily Logger."""
 
 from __future__ import annotations
 
@@ -6,10 +6,16 @@ import argparse
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from baby_everythings_agent.core.common import LOCAL_TIMEZONE
-from baby_everythings_agent.core.parser import parse_natural_records
-from baby_everythings_agent.core.storage import append_record, export_json_text, import_json_text
-from baby_everythings_agent.core.summary import daily_summary
+from baby_daily_logger.core.common import LOCAL_TIMEZONE
+from baby_daily_logger.core.parser import parse_natural_records
+from baby_daily_logger.core.storage import append_record, export_json_text, import_json_text
+from baby_daily_logger.core.summary import daily_summary
+from baby_daily_logger.core.visualization import (
+    plot_height_trend,
+    plot_milk_daily_totals,
+    plot_sleep_daily_hours,
+    plot_weight_trend,
+)
 
 
 def _parse_day(text: str) -> datetime:
@@ -65,8 +71,23 @@ def _cmd_import(args: argparse.Namespace) -> None:
     print(f"Imported: feeds={len(data['f'])}, poops={len(data['p'])}, sleeps={len(data['s'])}")
 
 
+def _cmd_visualize(args: argparse.Namespace) -> None:
+    workspace_root = Path(args.workspace).resolve()
+    if args.chart == "milk_daily_totals":
+        figure_path = plot_milk_daily_totals(workspace_root, days=args.days)
+    elif args.chart == "weight_trend":
+        figure_path = plot_weight_trend(workspace_root, days=args.days)
+    elif args.chart == "height_trend":
+        figure_path = plot_height_trend(workspace_root, days=args.days)
+    elif args.chart == "sleep_daily_hours":
+        figure_path = plot_sleep_daily_hours(workspace_root, days=args.days)
+    else:
+        raise ValueError(f"Unsupported chart: {args.chart}")
+    print(figure_path)
+
+
 def main() -> None:
-    parser = argparse.ArgumentParser(description="BabyEveryThings-compatible baby care agent CLI")
+    parser = argparse.ArgumentParser(description="Baby Daily Logger CLI")
     parser.add_argument("--workspace", default=".", help="Workspace directory for data/baby_everythings storage")
     subparsers = parser.add_subparsers(required=True)
 
@@ -82,13 +103,18 @@ def main() -> None:
     summary_parser.add_argument("date", nargs="?", default="today")
     summary_parser.set_defaults(func=_cmd_summary)
 
-    export_parser = subparsers.add_parser("export", help="Export BabyEveryThings-compatible JSON")
+    export_parser = subparsers.add_parser("export", help="Export 娃事通-compatible JSON")
     export_parser.add_argument("--output")
     export_parser.set_defaults(func=_cmd_export)
 
-    import_parser = subparsers.add_parser("import", help="Import BabyEveryThings-compatible JSON")
+    import_parser = subparsers.add_parser("import", help="Import 娃事通-compatible JSON")
     import_parser.add_argument("input")
     import_parser.set_defaults(func=_cmd_import)
+
+    visualize_parser = subparsers.add_parser("visualize", help="Generate a chart")
+    visualize_parser.add_argument("chart", choices=["milk_daily_totals", "weight_trend", "height_trend", "sleep_daily_hours"])
+    visualize_parser.add_argument("--days", type=int, default=30)
+    visualize_parser.set_defaults(func=_cmd_visualize)
 
     args = parser.parse_args()
     args.func(args)

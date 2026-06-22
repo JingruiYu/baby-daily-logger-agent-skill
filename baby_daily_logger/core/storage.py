@@ -1,4 +1,4 @@
-"""BabyEveryThings 数据读写、导入导出与变更逻辑。"""
+"""Baby daily log storage, import/export, and mutation logic."""
 
 from __future__ import annotations
 
@@ -7,11 +7,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from baby_everythings_agent.core.common import (
+from baby_daily_logger.core.common import (
     data_file_path,
     datetime_from_timestamp_milliseconds,
 )
-from baby_everythings_agent.core.schema import default_data, normalize_data, validate_data
+from baby_daily_logger.core.schema import default_data, normalize_data, validate_data
 
 SORTED_RECORD_FIELDS = ["f", "p", "w", "h", "s", "fd", "fm", "n"]
 
@@ -26,18 +26,18 @@ def ensure_data_store(workspace_root: Path) -> Path:
 
 
 def read_data(workspace_root: Path) -> dict[str, Any]:
-    """读取 BabyEveryThings 数据；缺文件时创建空数据。"""
+    """读取 baby daily log data；缺文件时创建空数据。"""
     path = ensure_data_store(workspace_root)
     data = json.loads(path.read_text(encoding="utf-8"))
     normalized = normalize_data(data)
     errors = validate_data(normalized)
     if errors:
-        raise ValueError("Invalid BabyEveryThings data: " + "; ".join(errors))
+        raise ValueError("Invalid Washitong-compatible data: " + "; ".join(errors))
     return normalized
 
 
 def write_data(workspace_root: Path, data: dict[str, Any]) -> None:
-    """原子写入 BabyEveryThings 数据。"""
+    """原子写入 baby daily log data。"""
     path = data_file_path(workspace_root)
     path.parent.mkdir(parents=True, exist_ok=True)
     normalized = normalize_data(data)
@@ -50,7 +50,7 @@ def write_data(workspace_root: Path, data: dict[str, Any]) -> None:
 
 
 def sort_records(data: dict[str, Any]) -> dict[str, Any]:
-    """按时间戳排序记录，同时保持 BabyEveryThings 字段约定。"""
+    """按时间戳排序记录，同时保持 Washitong field conventions。"""
     for field_name in ["f", "p", "w", "h", "s", "fm", "n"]:
         data[field_name] = sorted(data.get(field_name, []), key=lambda record: record[0])
     data["fd"] = sorted(data.get("fd", []), key=lambda record: record[1] if len(record) > 1 else 0)
@@ -138,7 +138,7 @@ def import_json_text(workspace_root: Path, text: str) -> dict[str, Any]:
     data = load_json_text(text)
     errors = validate_data(data)
     if errors:
-        raise ValueError("Invalid BabyEveryThings import: " + "; ".join(errors))
+        raise ValueError("Invalid Washitong import: " + "; ".join(errors))
     write_data(workspace_root, sort_records(data))
     return data
 

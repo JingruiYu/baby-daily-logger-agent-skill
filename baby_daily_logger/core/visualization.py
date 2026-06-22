@@ -1,4 +1,4 @@
-"""BabyEveryThings 可视化 helper。"""
+"""Baby daily log visualization helpers."""
 
 from __future__ import annotations
 
@@ -7,15 +7,15 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Any
 
-from baby_everythings_agent.core.common import (
+from baby_daily_logger.core.common import (
     data_directory,
     datetime_from_timestamp_milliseconds,
     now_local,
     start_of_day,
     timestamp_milliseconds,
 )
-from baby_everythings_agent.core.storage import read_data
-from baby_everythings_agent.plotting import save_line_chart
+from baby_daily_logger.core.storage import read_data
+from baby_daily_logger.plotting import save_line_chart
 
 
 def plot_milk_daily_totals(workspace_root: Path, days: int = 30) -> Path:

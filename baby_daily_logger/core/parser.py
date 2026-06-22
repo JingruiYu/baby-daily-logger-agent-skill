@@ -6,7 +6,7 @@ import re
 from datetime import datetime, timedelta
 from typing import Any
 
-from baby_everythings_agent.core.common import LOCAL_TIMEZONE, now_local, timestamp_milliseconds
+from baby_daily_logger.core.common import LOCAL_TIMEZONE, now_local, timestamp_milliseconds
 
 _DATE_PATTERN = re.compile(r"(\d{4})[-/年](\d{1,2})[-/月](\d{1,2})日?")
 _NUMERIC_TIME_PATTERN = re.compile(r"(?:(今天|昨天|前天)\s*)?(早上|上午|中午|下午|晚上|夜里|凌晨)?\s*(\d{1,2})[:：点](\d{1,2})?分?")
@@ -16,7 +16,7 @@ _RECORD_SEPARATORS = re.compile(r"[，,；;。\n]+|(?<=\d)\s*又\s*(?=\d|[早上
 
 
 def parse_natural_records(text: str, reference_time: datetime | None = None) -> dict[str, Any]:
-    """把自然语言文本解析成一条或多条 BabyEveryThings 记录。"""
+    """把自然语言文本解析成一条或多条宝宝起居记录。"""
     reference = reference_time or now_local()
     normalized_text = text.strip()
     if not normalized_text:

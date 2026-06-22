@@ -1,4 +1,4 @@
-"""BabyEveryThings 记录总结 helper。"""
+"""Baby daily log summary helpers."""
 
 from __future__ import annotations
 
@@ -6,12 +6,12 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from baby_everythings_agent.core.common import (
+from baby_daily_logger.core.common import (
     end_of_day,
     start_of_day,
     timestamp_milliseconds,
 )
-from baby_everythings_agent.core.storage import format_time, read_data, records_for_range
+from baby_daily_logger.core.storage import format_time, read_data, records_for_range
 
 
 def daily_summary(workspace_root: Path, day: datetime) -> str:
@@ -22,7 +22,7 @@ def daily_summary(workspace_root: Path, day: datetime) -> str:
     records = records_for_range(data, start_timestamp, end_timestamp)
     date_text = day.date().isoformat()
 
-    lines = [f"# BabyEveryThings {date_text} 记录总结", ""]
+    lines = [f"# Baby Daily Logger {date_text} 记录总结", ""]
     feed_records = records["f"]
     total_milk = sum(int(record[1]) for record in feed_records)
     lines.append(f"- 喂奶：{len(feed_records)} 次，共 {total_milk} ml")

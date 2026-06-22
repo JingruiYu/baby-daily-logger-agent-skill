@@ -10,20 +10,26 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from baby_everythings_agent.core.common import LOCAL_TIMEZONE
-from baby_everythings_agent.core.parser import parse_followup_for_pending, parse_natural_records
-from baby_everythings_agent.core.pending import (
+from baby_daily_logger.core.common import LOCAL_TIMEZONE
+from baby_daily_logger.core.parser import parse_followup_for_pending, parse_natural_records
+from baby_daily_logger.core.pending import (
     DEFAULT_SESSION_KEY,
     clear_pending_record,
     get_pending_record,
     save_pending_record,
 )
-from baby_everythings_agent.core.storage import append_record, export_json_text, import_json_text
-from baby_everythings_agent.core.summary import daily_summary
+from baby_daily_logger.core.storage import append_record, export_json_text, import_json_text
+from baby_daily_logger.core.summary import daily_summary
+from baby_daily_logger.core.visualization import (
+    plot_height_trend,
+    plot_milk_daily_totals,
+    plot_sleep_daily_hours,
+    plot_weight_trend,
+)
 
 
 def parse_record(text: str) -> str:
-    """Parse a natural-language baby care record without writing it."""
+    """Parse a natural-language baby daily record without writing it."""
     parsed = parse_natural_records(text)
     if parsed["status"] == "missing_information":
         return (
@@ -41,7 +47,7 @@ def record(
     write: bool = False,
     session_key: str = DEFAULT_SESSION_KEY,
 ) -> str:
-    """Parse and optionally write baby care records.
+    """Parse and optionally write baby daily records.
 
     Set `write=False` for confirmation-first workflows. Set `write=True` after
     the user confirms the parsed summary.
@@ -76,14 +82,30 @@ def query_day(workspace_root: str | Path, date: str = "today") -> str:
 
 
 def export_data(workspace_root: str | Path) -> str:
-    """Return BabyEveryThings-compatible compact JSON."""
+    """Return 娃事通-compatible compact JSON."""
     return export_json_text(Path(workspace_root))
 
 
 def import_data(workspace_root: str | Path, text: str) -> str:
-    """Import BabyEveryThings-compatible JSON or segmented clipboard text."""
+    """Import 娃事通-compatible JSON or segmented clipboard text."""
     data = import_json_text(Path(workspace_root), text)
     return f"Imported: feeds={len(data['f'])}, poops={len(data['p'])}, sleeps={len(data['s'])}"
+
+
+def visualize(workspace_root: str | Path, chart: str, *, days: int = 30) -> str:
+    """Generate a chart and return the generated image path."""
+    root = Path(workspace_root)
+    if chart == "milk_daily_totals":
+        figure_path = plot_milk_daily_totals(root, days=days)
+    elif chart == "weight_trend":
+        figure_path = plot_weight_trend(root, days=days)
+    elif chart == "height_trend":
+        figure_path = plot_height_trend(root, days=days)
+    elif chart == "sleep_daily_hours":
+        figure_path = plot_sleep_daily_hours(root, days=days)
+    else:
+        raise ValueError(f"Unsupported chart: {chart}")
+    return str(figure_path)
 
 
 def _parse_day(text: str) -> datetime:

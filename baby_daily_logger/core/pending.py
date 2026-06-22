@@ -1,4 +1,4 @@
-"""BabyEveryThings 多轮补全的持久化 pending 状态。"""
+"""Persistent pending state for multi-turn baby daily logging."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Any
 
-from baby_everythings_agent.core.common import data_directory, now_local
+from baby_daily_logger.core.common import data_directory, now_local
 
 PENDING_FILE_NAME = "pending_records.json"
 PENDING_EXPIRATION_HOURS = 12

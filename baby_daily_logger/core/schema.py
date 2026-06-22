@@ -1,15 +1,15 @@
-"""BabyEveryThings v7 数据 schema helper。"""
+"""Washitong-compatible v7 data schema helpers."""
 
 from __future__ import annotations
 
 from copy import deepcopy
 from typing import Any
 
-from baby_everythings_agent.core.common import APP_VERSION
+from baby_daily_logger.core.common import APP_VERSION
 
 
 def default_data() -> dict[str, Any]:
-    """返回一个兼容 BabyEveryThings v7 的空数据对象。"""
+    """返回一个compatible with Washitong v7 的空数据对象。"""
     return {
         "v": APP_VERSION,
         "b": "",

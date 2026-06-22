@@ -1,94 +1,120 @@
-# BabyEveryThings Agent Skill
+# Baby Daily Logger Agent Skill
 
-Natural-language baby care logging with BabyEveryThings-compatible JSON import/export.
+用自然语言记录宝宝起居，并兼容娃事通微信小程序。
 
-This project is not another baby care app. It is a small data bridge and agent skill: you can record baby care events by chatting with an agent, keep the records structured, and export them back to a JSON format compatible with the BabyEveryThings mini-program.
+Natural-language baby daily logging, compatible with the Washitong / 娃事通 WeChat mini-program JSON format.
 
-## Why
+![workflow](assets/workflow.svg)
 
-Baby care records are frequent, tiny, and easy to forget: milk, poop, sleep, solid food, bath, nail trimming, weight, height, and small notes.
+## What it does / 它能做什么
 
-A mini-program is useful for viewing and managing records, but real parenting moments are often inconvenient for tapping through UI screens. A natural-language agent input is often faster:
+You say one short sentence. The skill turns it into structured baby daily records.
+
+你说一句话，它把内容转成结构化宝宝起居记录。
+
+Examples:
 
 - `刚刚喝了120奶`
 - `10点20睡着了，11点05醒了`
 - `刚刚拉屎了，是稀的`
 - `今天第一次吃了南瓜泥`
 
-The key idea is: use the agent for input, keep the data portable, and preserve compatibility with the existing mini-program data format.
+Supported records / 支持记录：
 
-## Features
+- Milk / 喂奶
+- Poop / 大便
+- Sleep / 睡眠
+- Weight and height / 体重和身高
+- Solid food / 辅食
+- Notes / 小事记录
+- Bath and nail trimming / 洗澡、剪指甲
 
-- Natural-language parsing for common baby care records.
-- Missing-field detection and follow-up questions.
-- Local JSON storage.
-- BabyEveryThings-compatible JSON import/export.
-- Daily summaries.
-- Optional visualization for milk, growth, and sleep.
-- Agent-friendly `SKILL.md`.
+It can also:
 
-## Install
+- Ask follow-up questions when information is missing.
+- Summarize a day.
+- Export JSON that can be imported by 娃事通.
+- Import existing 娃事通-compatible JSON.
+- Draw simple charts for milk, growth, and sleep.
+
+## Install / 安装
 
 ```bash
 pip install -e .
 ```
 
-Optional visualization support:
+For charts / 如需绘图：
 
 ```bash
 pip install -e '.[visualization]'
 ```
 
-## CLI examples
+## Quick use / 快速使用
 
-Parse without writing:
-
-```bash
-baby-care-agent parse '刚刚喝了120奶'
-```
-
-Record into local storage:
+Parse only, do not write / 只解析，不写入：
 
 ```bash
-baby-care-agent --workspace ./demo record '刚刚喝了120奶'
+baby-daily-logger parse '刚刚喝了120奶'
 ```
 
-Show today's summary:
+Write a record / 写入记录：
 
 ```bash
-baby-care-agent --workspace ./demo summary today
+baby-daily-logger --workspace ./demo record '刚刚喝了120奶'
 ```
 
-Export JSON:
+Show today's summary / 查询今天总结：
 
 ```bash
-baby-care-agent --workspace ./demo export --output baby_data_export.json
+baby-daily-logger --workspace ./demo summary today
 ```
 
-Import JSON:
+Export JSON for 娃事通 / 导出娃事通兼容 JSON：
 
 ```bash
-baby-care-agent --workspace ./demo import baby_data_export.json
+baby-daily-logger --workspace ./demo export --output baby_data_export.json
 ```
 
-## Data location
+Import JSON / 导入 JSON：
 
-By default, records are stored under:
+```bash
+baby-daily-logger --workspace ./demo import baby_data_export.json
+```
+
+Draw a chart / 绘图：
+
+```bash
+baby-daily-logger --workspace ./demo visualize milk_daily_totals --days 30
+```
+
+## Data location / 数据位置
+
+By default, data is stored under the selected workspace:
+
+默认数据保存在所选 workspace 下：
 
 ```text
 data/baby_everythings/baby_data.json
 ```
 
-inside the selected workspace.
+The `data/` directory is ignored by git.
 
-## Agent integration
+`data/` 默认不会被 git 提交。
 
-See `SKILL.md` for agent-facing usage instructions and `docs/agent-integration.md` for framework-neutral Python adapter examples.
+## Files / 文件说明
 
-## Compatibility note
+- `SKILL.md`: instructions for agents. Agent 使用说明。
+- `SCHEMA.md`: JSON schema compatible with 娃事通. 兼容格式说明。
+- `baby_daily_logger/cli.py`: command line interface. 命令行入口。
+- `baby_daily_logger/adapters/simple_tools.py`: simple Python functions for agent hosts. 给 Agent 宿主封装工具用。
+- `baby_daily_logger/core/parser.py`: natural-language parser. 自然语言解析。
+- `baby_daily_logger/core/storage.py`: JSON storage, import, export. 数据读写和导入导出。
+- `baby_daily_logger/core/summary.py`: daily summary. 每日总结。
+- `baby_daily_logger/core/visualization.py`: chart logic. 图表逻辑。
+- `examples/demo_baby_data.json`: synthetic demo data. 匿名示例数据。
 
-The JSON schema is intentionally compact and compatible with BabyEveryThings-style exports. See `docs/schema.md` for field details.
+## Privacy / 隐私
 
-## Privacy note
+Baby records are private family data. Do not publish real exported JSON, baby names, birth dates, screenshots, bot tokens, mini-program IDs, or cloud environment IDs.
 
-Do not commit real baby care data. The `data/` directory is ignored by default. See `docs/privacy.md` before publishing demos or screenshots.
+宝宝起居记录是家庭隐私。不要公开真实导出 JSON、宝宝姓名、出生日期、聊天截图、机器人 token、小程序 ID 或云环境 ID。

@@ -1,4 +1,4 @@
-"""BabyEveryThings 工具共享常量与路径 helper。"""
+"""Baby daily logger shared constants and path helpers."""
 
 from __future__ import annotations
 
@@ -12,12 +12,12 @@ LOCAL_TIMEZONE = timezone(timedelta(hours=8))
 
 
 def data_directory(workspace_root: Path) -> Path:
-    """返回工作区下的 BabyEveryThings 数据目录。"""
+    """返回工作区下的 baby daily log data目录。"""
     return workspace_root / DATA_DIRECTORY
 
 
 def data_file_path(workspace_root: Path) -> Path:
-    """返回 BabyEveryThings 标准数据 JSON 路径。"""
+    """返回 standard baby daily log JSON path。"""
     return data_directory(workspace_root) / DATA_FILE_NAME
 
 

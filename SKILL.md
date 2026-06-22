@@ -126,9 +126,3 @@ Example:
 - `baby_daily_logger/core/summary.py`: daily summary.
 - `baby_daily_logger/core/visualization.py`: chart data aggregation.
 - `baby_daily_logger/plotting.py`: matplotlib chart writer.
-
-## Privacy / 隐私
-
-Do not publish real baby data, screenshots, names, birth dates, bot tokens, mini-program IDs, or exported JSON unless the user explicitly approves.
-
-不要公开真实宝宝数据、截图、姓名、出生日期、机器人 token、小程序 ID 或导出 JSON，除非用户明确确认。

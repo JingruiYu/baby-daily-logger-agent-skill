@@ -49,6 +49,11 @@ You can keep using 娃事通 as the mobile UI, and use an agent to write or expo
 
 <img src="assets/washitong-screenshot.jpg" alt="娃事通微信小程序截图" width="260" />
 
+
+## Related article / 相关文章
+
+- [有了孩子以后，我才真正理解“自然语言交互”有什么用](https://zhuanlan.zhihu.com/p/2052405793216010205)：这篇文章记录了为什么这个 skill 适合作为娃事通的自然语言录入层，以及为什么 Agent 更适合接入已有工具的数据层，而不是替代 UI。
+
 ## Use with agent systems / 接入 Agent 系统
 
 This repo is designed to be used by agent systems such as OpenClaw, Claude Code, MCP-based agents, or your own tool-calling runtime.

@@ -37,6 +37,36 @@ It can also:
 - Import existing 娃事通-compatible JSON.
 - Draw simple charts for milk, growth, and sleep.
 
+## 娃事通兼容 / Washitong compatible
+
+This skill is not a replacement for the mini-program. It is a natural-language input layer for agents.
+
+这个 skill 不是替代小程序，而是给 Agent 用的自然语言录入层。
+
+You can keep using 娃事通 as the mobile UI, and use an agent to write or export compatible JSON.
+
+你仍然可以用娃事通作为手机端界面，同时用 Agent 记录并导出兼容 JSON。
+
+<img src="assets/washitong-screenshot.jpg" alt="娃事通微信小程序截图" width="260" />
+
+## Use with agent systems / 接入 Agent 系统
+
+This repo is designed to be used by agent systems such as OpenClaw, Claude Code, MCP-based agents, or your own tool-calling runtime.
+
+这个仓库适合接入 OpenClaw、Claude Code、基于 MCP 的 Agent，或你自己的 tool-calling 运行时。
+
+Agent-facing instructions are in `SKILL.md`.
+
+Agent 使用说明在 `SKILL.md`。
+
+Typical workflow:
+
+1. User says: `刚刚喝了120奶`.
+2. Agent parses it without writing.
+3. Agent asks the user to confirm.
+4. Agent writes the structured record.
+5. User can query summaries, draw charts, or export JSON for 娃事通.
+
 ## Install / 安装
 
 ```bash
@@ -86,35 +116,3 @@ Draw a chart / 绘图：
 ```bash
 baby-daily-logger --workspace ./demo visualize milk_daily_totals --days 30
 ```
-
-## Data location / 数据位置
-
-By default, data is stored under the selected workspace:
-
-默认数据保存在所选 workspace 下：
-
-```text
-data/baby_everythings/baby_data.json
-```
-
-The `data/` directory is ignored by git.
-
-`data/` 默认不会被 git 提交。
-
-## Files / 文件说明
-
-- `SKILL.md`: instructions for agents. Agent 使用说明。
-- `SCHEMA.md`: JSON schema compatible with 娃事通. 兼容格式说明。
-- `baby_daily_logger/cli.py`: command line interface. 命令行入口。
-- `baby_daily_logger/adapters/simple_tools.py`: simple Python functions for agent hosts. 给 Agent 宿主封装工具用。
-- `baby_daily_logger/core/parser.py`: natural-language parser. 自然语言解析。
-- `baby_daily_logger/core/storage.py`: JSON storage, import, export. 数据读写和导入导出。
-- `baby_daily_logger/core/summary.py`: daily summary. 每日总结。
-- `baby_daily_logger/core/visualization.py`: chart logic. 图表逻辑。
-- `examples/demo_baby_data.json`: synthetic demo data. 匿名示例数据。
-
-## Privacy / 隐私
-
-Baby records are private family data. Do not publish real exported JSON, baby names, birth dates, screenshots, bot tokens, mini-program IDs, or cloud environment IDs.
-
-宝宝起居记录是家庭隐私。不要公开真实导出 JSON、宝宝姓名、出生日期、聊天截图、机器人 token、小程序 ID 或云环境 ID。
